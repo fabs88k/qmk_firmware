@@ -7,6 +7,16 @@ enum layer_number {
   _ADJUST,
 };
 
+enum custom_keys {
+    XCODE = SAFE_RANGE,
+    ANDROID,
+    CHROME,
+    TEAMS,
+    OUTLOOK,
+    SCREEN_LEFT,
+    SCREEN_RIGHT
+}
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* QWERTY
@@ -45,10 +55,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
 [_LOWER] = LAYOUT( \
-  _______, _______, _______, _______, _______, _______,                   _______, _______, _______,_______, _______, _______,\
-  KC_F12, KC_F11,  KC_F10,  KC_F9,   KC_F8,   KC_F7,                     KC_F6,   KC_F5,   KC_F4,   KC_F3,  KC_F2,  KC_F1, \
-  KC_GRV, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_TILD, \
-  _______, _______, _______, _______, _______, _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, SCREEN_RIGHT, SCREEN_LEFT, XXXXXXX, XXXXXXX, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   TEAMS,  XCODE, ANDROID, CHROME, OUTLOOK, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
                              _______, _______, _______, _______, _______,  _______, _______, _______\
 ),
 /* RAISE
@@ -68,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_RAISE] = LAYOUT( \
   _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
-  XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, KC_CAPSLOCK, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
   XXXXXXX, XXXXXXX, KC_RGHT, KC_DOWN, KC_LEFT, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
   KC_BSLS, KC_RBRC, KC_LBRC, KC_EQL, KC_MINS, KC_PLUS,   _______, _______,  XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, KC_LSFT, \
                              _______, _______, _______,  _______, _______,  _______, _______, _______ \
@@ -141,7 +151,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef OLED_DRIVER_ENABLE
     set_keylog(keycode, record);
 #endif
-    // set_timelog();
+
+    switch (keycode) {
+    case XCODE:
+        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "xcode" SS_TAP(X_ENTER));
+        break;
+    case ANDROID:
+        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "android studio" SS_TAP(X_ENTER));
+        break;
+    case TEAMS:
+        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "microsoft teams" SS_TAP(X_ENTER));
+        break;
+    case OUTLOOK:
+        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "outlook" SS_TAP(X_ENTER));
+        break;
+    case CHROME:
+        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "chrome" SS_TAP(X_ENTER));
+        break;
+    case SCREEN_LEFT:
+        SEND_SCREEN(SS_DOWN(X_LCTRL) SS_TAP(X_LEFT) SS_UP(X_LCTRL));
+        break;
+    case SCREEN_RIGHT:
+        SEND_SCREEN(SS_DOWN(X_LCTRL) SS_TAP(X_RIGHT) SS_UP(X_LCTRL));
+        break;
+    }
   }
+
   return true;
 }
