@@ -14,7 +14,9 @@ enum custom_keys {
     TEAMS,
     OUTLOOK,
     SCREEN_LEFT,
-    SCREEN_RIGHT
+    SCREEN_RIGHT,
+    FINDER,
+    TOWER
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -42,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |      |      |      |SC_RIG|SC_LEF|      |                    |      |      |      |      |      |      |
+ * |      |      |      |SC_RIG|SC_LEF|FINDER|                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |OUTLOO|CHROME|ANDROI| XCODE| TEAMS|                    |  F7  |  F8  |  F9  | F10  | F11  | F12  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -56,8 +58,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_LOWER] = LAYOUT( \
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, SCREEN_RIGHT, SCREEN_LEFT, XXXXXXX, XXXXXXX, XXXXXXX, \
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   TEAMS,  XCODE, ANDROID, CHROME, OUTLOOK, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   FINDER , SCREEN_RIGHT, SCREEN_LEFT, XXXXXXX, XXXXXXX, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   TEAMS,  XCODE, ANDROID, CHROME, OUTLOOK, TOWER, \
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
                              _______, _______, _______, _______, _______,  _______, _______, _______\
 ),
@@ -146,6 +148,12 @@ void oled_task_user(void) {
 }
 #endif // OLED_DRIVER_ENABLE
 
+void execute_finder_command(char *command) {
+    SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD));
+    send_string(command);
+    SEND_STRING(SS_TAP(X_ENTER));
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
 #ifdef OLED_DRIVER_ENABLE
@@ -154,19 +162,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
     case XCODE:
-        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "xcode" SS_TAP(X_ENTER));
+        execute_finder_command("xcode");
         break;
     case ANDROID:
-        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "android studio" SS_TAP(X_ENTER));
+        execute_finder_command("android studio");
         break;
     case TEAMS:
-        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "microsoft teams" SS_TAP(X_ENTER));
+        execute_finder_command("teams");
         break;
     case OUTLOOK:
-        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "outlook" SS_TAP(X_ENTER));
+        execute_finder_command("outlook");
         break;
     case CHROME:
-        SEND_STRING(SS_DOWN(X_LCMD) SS_TAP(X_SPACE) SS_UP(X_LCMD) "chrome" SS_TAP(X_ENTER));
+        execute_finder_command("chrome");
+        break;
+    case FINDER:
+        execute_finder_command("finder");
+        break;
+    case TOWER:
+        execute_finder_command("tower");
         break;
     case SCREEN_LEFT:
         SEND_STRING(SS_DOWN(X_LCTRL) SS_TAP(X_LEFT) SS_UP(X_LCTRL));
